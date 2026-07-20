@@ -19,7 +19,7 @@
 4. [Models Evaluated](#models-evaluated)
 5. [Key Results](#key-results)
 6. [Repository Structure](#repository-structure)
-7. [How to Run](#how-to-run)
+
 
 ---
 
