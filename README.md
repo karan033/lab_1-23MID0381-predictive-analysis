@@ -8,70 +8,159 @@
 ![Status](https://img.shields.io/badge/Status-Completed-success.svg)
 
 > **Advanced Predictive Analytics (Lab 01)**
-> An end-to-end, reproducible, and leakage-safe machine learning workflow to estimate property values based on attributes such as median income, house age, and geographical location.
+> An end-to-end, reproducible, and leakage-safe machine learning workflow for estimating residential property values using statistical and machine learning models.
 
 ---
 
 ## Table of Contents
+
 1. [Overview](#overview)
 2. [Datasets](#datasets)
 3. [Project Workflow](#project-workflow)
 4. [Models Evaluated](#models-evaluated)
 5. [Key Results](#key-results)
 6. [Repository Structure](#repository-structure)
-
+7. [How to Run](#how-to-run)
 
 ---
 
 ## Overview
-This repository contains the code, exploratory data analysis (EDA), and technical reporting for predicting median district house values. The goal of this project is to provide automated valuation estimates and property rankings for price discovery, establishing a robust statistical baseline while evaluating more complex, non-linear ensemble models.
+
+This repository contains the implementation, exploratory data analysis (EDA), and technical reporting for predicting median district house values. The project follows a complete predictive analytics workflow, beginning with data exploration and preprocessing, progressing through baseline and advanced model development, and concluding with rigorous evaluation and diagnostic analysis.
+
+Special emphasis is placed on reproducibility, prevention of data leakage, fair model comparison, and interpretable performance evaluation.
+
+---
 
 ## Datasets
-To satisfy multi-dataset diagnostic requirements, two datasets were audited and utilized:
 
-*   **California Housing Dataset (Primary):** 
-    *   **Size:** 20,640 samples, 8 numeric predictors. 
-    *   **Target:** Continuous median house value per census block.
-*   **UCI Real Estate Valuation (Secondary):** 
-    *   **Size:** 414 instances, 6 predictors. 
-    *   **Target:** House price per unit area (Sindian Dist., New Taipei).
+To satisfy the multi-dataset diagnostic requirements, two housing datasets were utilized.
+
+### California Housing Dataset (Primary)
+
+* **Samples:** 20,640
+* **Features:** 8 numerical predictors
+* **Target:** Median house value for each California census block
+
+### UCI Real Estate Valuation Dataset (Secondary)
+
+* **Samples:** 414
+* **Features:** 6 predictors
+* **Target:** House price per unit area (Sindian District, New Taipei City)
+
+---
 
 ## Project Workflow
-The analysis strictly adheres to an industry-standard predictive analytics pipeline:
 
-1.  **Environment Setup:** Established a reproducible environment using a fixed random seed (`SEED = 42`).
-2.  **Holdout Design:** Created an 80/20 train-test split prior to any data transformations to prevent data leakage.
-3.  **Exploratory Data Analysis (EDA):** Visualized target distributions and feature correlations strictly on the training partition.
-4.  **Preprocessing Pipeline:** Engineered a reusable `scikit-learn` `ColumnTransformer` integrating `SimpleImputer` (median) and `StandardScaler` for numerical data, alongside `OneHotEncoder` for categoricals.
-5.  **Baseline Modeling:** Deployed a naive mean-prediction baseline and a Simple Linear Regression model using the strongest predictor (`MedInc`).
-6.  **Validation & Tuning:** Evaluated models using 5-fold cross-validation (`KFold`) on the training set and tuned Ridge regression using `GridSearchCV`.
-7.  **Diagnostics:** Conducted an ablation study (target log transformation), evaluated segment-level errors (by price and geography), and performed residual analysis.
+The project follows an industry-standard machine learning pipeline.
+
+1. Established a reproducible environment using a fixed random seed (`SEED = 42`).
+2. Performed an 80/20 train-test split before any preprocessing to eliminate data leakage.
+3. Conducted exploratory data analysis (EDA) exclusively on the training data.
+4. Built preprocessing pipelines using `ColumnTransformer`, `SimpleImputer`, `StandardScaler`, and `OneHotEncoder`.
+5. Implemented baseline models including:
+
+   * Naïve Mean Predictor
+   * Simple Linear Regression
+6. Trained and compared multiple regression algorithms.
+7. Performed hyperparameter tuning using `GridSearchCV`.
+8. Evaluated models with 5-fold cross-validation.
+9. Conducted residual analysis, ablation studies, and segment-wise error analysis.
+10. Selected the best-performing model based on unseen test-set performance.
+
+---
 
 ## Models Evaluated
-The following models were implemented and compared under identical validation protocols:
-*   Linear Regression (Simple & Multiple)
-*   Ridge Regression (L2 Regularization)
-*   Lasso Regression (L1 Regularization)
-*   Decision Tree Regressor
-*   Random Forest Regressor
+
+The following regression models were implemented and evaluated under identical validation protocols.
+
+* Linear Regression (Simple)
+* Multiple Linear Regression
+* Ridge Regression
+* Lasso Regression
+* Decision Tree Regressor
+* Random Forest Regressor
+
+---
 
 ## Key Results
-The **Random Forest Regressor** was selected as the final model as it significantly outperformed linear baselines by capturing non-linear spatial interactions.
 
-### Final Test Metrics (Random Forest)
-| Metric | Score | Note |
-| :--- | :--- | :--- |
-| **Test MAE** | `0.326` | Average absolute error in predictions. |
-| **Test RMSE** | `0.504` | Penalizes larger valuation errors. |
-| **Test R²** | `0.806` | Variance explained by the model. |
+The **Random Forest Regressor** achieved the best predictive performance by effectively capturing non-linear relationships between housing characteristics and property values.
 
-**Major Insights:**
-*   **Baseline Improvement:** The tuned Random Forest model reduced the RMSE by approximately **56%** relative to the naive mean-prediction baseline (RMSE: 1.145).
-*   **Segment Performance:** The model accurately predicts low/medium-priced homes (RMSE: 0.382) but struggles with highly-priced properties (RMSE: 0.760) due to a hard cap (target censoring) at the 5.0 mark in the raw dataset.
+### Final Test Performance
+
+| Metric       |   Score   | Description                        |
+| :----------- | :-------: | :--------------------------------- |
+| **MAE**      | **0.326** | Average absolute prediction error  |
+| **RMSE**     | **0.504** | Penalizes larger prediction errors |
+| **R² Score** | **0.806** | Proportion of variance explained   |
+
+### Major Findings
+
+* The final Random Forest model reduced RMSE by approximately **56%** compared to the naïve mean baseline (RMSE = 1.145).
+* Ensemble methods consistently outperformed linear models due to their ability to capture complex, non-linear relationships.
+* Prediction accuracy remained strong for low- and medium-priced homes but deteriorated for expensive properties because of target-value censoring at **5.0** in the California Housing dataset.
+* Cross-validation demonstrated stable generalization performance with minimal variance across folds.
+
+---
 
 ## Repository Structure
 
 ```text
 House-Price-Prediction/
-├── lab_01_23MID0381_Predictive_Analysis.ipynb  # Primary Jupyter Notebook
+├── lab_01_23MID0381_Predictive_Analysis.ipynb   # Complete predictive analytics workflow
 └── README.md                                   # Project documentation
+```
+
+---
+
+## How to Run
+
+### Prerequisites
+
+The project was developed and tested using the following software versions.
+
+| Software     | Version |
+| :----------- | :-----: |
+| Python       | 3.12.13 |
+| pandas       |  2.2.2  |
+| scikit-learn |  1.6.1  |
+
+Install the required dependencies using:
+
+```bash
+pip install pandas==2.2.2 scikit-learn==1.6.1 numpy matplotlib seaborn joblib
+```
+
+### Running the Project
+
+1. Clone or download this repository.
+
+2. Open the notebook:
+
+```text
+lab_01_23MID0381_Predictive_Analysis.ipynb
+```
+
+using **Jupyter Notebook**, **JupyterLab**, or **Google Colab**.
+
+3. Execute **Restart Kernel and Run All Cells** (or simply **Run All**) to reproduce the complete workflow.
+
+The notebook will automatically perform:
+
+* Data loading
+* Exploratory Data Analysis (EDA)
+* Data preprocessing
+* Model training
+* Hyperparameter tuning
+* Cross-validation
+* Residual diagnostics
+* Model evaluation
+
+No additional configuration is required.
+
+---
+
+## License
+
+This project was developed as part of the **Advanced Predictive Analytics (Lab 01)** coursework and is intended for educational purposes.
